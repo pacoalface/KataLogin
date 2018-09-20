@@ -1,11 +1,16 @@
 package pacominube.myapplication
 
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
 import junit.framework.Assert.assertEquals
 import org.junit.Test
 
 class LoginValidatorTest {
+
+    private val clock = mock<Clock>()
+
     private val loginValidator by lazy {
-        LoginValidator()
+        LoginValidator(clock)
     }
 
     @Test
@@ -26,5 +31,17 @@ class LoginValidatorTest {
         val result = loginValidator.validateLogin(userName, password)
 
         assertEquals(true, result)
+    }
+
+    @Test fun logoutValidatorShouldReturnTrue() {
+        whenever(clock.getTimeInMillis()).thenReturn(2)
+
+        assertEquals(true, loginValidator.validateLogout())
+    }
+
+    @Test fun logoutValidatorShouldReturnFalse() {
+        whenever(clock.getTimeInMillis()).thenReturn(3)
+
+        assertEquals(false, loginValidator.validateLogout())
     }
 }
