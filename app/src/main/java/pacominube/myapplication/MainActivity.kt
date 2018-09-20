@@ -7,16 +7,14 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    companion object {
-        const val CREDENTIALS = "admin"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val loginValidator = LoginValidator()
+
         loginButton.setOnClickListener {
-            if(userName.text.toString() != CREDENTIALS || password.text.toString() != CREDENTIALS) {
+            if(!loginValidator.validateLogin(userName.text.toString(), password.text.toString())) {
                 Toast.makeText(this, "Usuario o contraseña inválidos", Toast.LENGTH_SHORT).show()
             }
         }
