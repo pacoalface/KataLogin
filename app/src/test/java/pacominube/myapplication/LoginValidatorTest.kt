@@ -3,6 +3,7 @@ package pacominube.myapplication
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertTrue
 import org.junit.Test
 
 class LoginValidatorTest {
@@ -14,23 +15,33 @@ class LoginValidatorTest {
     }
 
     @Test
-    fun loginValidatorShouldReturnFalse() {
-        val userName = "pepe"
+    fun loginValidatorShouldReturnInvalidCredentials() {
+        val userName = "admin"
         val password = "pass"
 
         val result = loginValidator.validateLogin(userName, password)
 
-        assertEquals(false, result)
+        assertTrue(result is LoginResult.InvalidPassword)
     }
 
     @Test
-    fun loginValidatorShouldReturnTrue() {
+    fun loginValidatorShouldReturnSuccess() {
         val userName = "admin"
         val password = "admin"
 
         val result = loginValidator.validateLogin(userName, password)
 
-        assertEquals(true, result)
+        assertTrue(result is LoginResult.Success)
+    }
+
+    @Test
+    fun loginValidatorShouldReturnInvalidUserName() {
+        val userName = "admin."
+        val password = "admin"
+
+        val result = loginValidator.validateLogin(userName, password)
+
+        assertTrue(result is LoginResult.InvalidUserName)
     }
 
     @Test fun logoutValidatorShouldReturnTrue() {

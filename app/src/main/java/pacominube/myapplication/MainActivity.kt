@@ -6,36 +6,49 @@ import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), Presenter.View {
 
     private val loginValidator = LoginValidator(Clock())
-
+    private val presenter by lazy {
+        Presenter(loginValidator)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        presenter.attachView(this)
 
         loginButton.setOnClickListener {
-            if(!loginValidator.validateLogin(userName.text.toString(), password.text.toString())) {
-                Toast.makeText(this, "Usuario o contraseña inválidos", Toast.LENGTH_SHORT).show()
-            } else {
-                it.visibility = View.INVISIBLE
-                logoutButton.visibility = View.VISIBLE
-                userName.visibility = View.INVISIBLE
-                password.visibility = View.INVISIBLE
-            }
+            presenter.login(userName.text.toString(), password.text.toString())
         }
 
         logoutButton.setOnClickListener {
-           if(loginValidator.validateLogout()) {
-               logoutButton.visibility = View.INVISIBLE
-               loginButton.visibility = View.VISIBLE
-               userName.visibility = View.VISIBLE
-               password.visibility = View.VISIBLE
-           } else {
-               Toast.makeText(this, "Logout error", Toast.LENGTH_SHORT).show()
-           }
+            presenter.logout()
         }
+    }
+
+    override fun showError(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun showLoginForm() {
+        loginButton.visibility = View.VISIBLE
+        userName.visibility = View.VISIBLE
+        password.visibility = View.VISIBLE
+    }
+
+    override fun showLogoutForm() {
+        logoutButton.visibility = View.VISIBLE
+    }
+
+    override fun hideLoginForm() {
+        loginButton.visibility = View.INVISIBLE
+        userName.visibility = View.INVISIBLE
+        password.visibility = View.INVISIBLE
+    }
+
+    override fun hideLogoutForm() {
+        logoutButton.visibility = View.INVISIBLE
     }
 }
