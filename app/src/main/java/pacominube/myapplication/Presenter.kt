@@ -1,6 +1,8 @@
 package pacominube.myapplication
 
-class Presenter(private val loginValidator: LoginValidator) {
+import co.metalab.asyncawait.async
+
+class Presenter(private val loginValidator: LoginValidator, private val view: View) {
 
     companion object {
         const val INVALID_USERNAME = "Invalid username"
@@ -8,24 +10,19 @@ class Presenter(private val loginValidator: LoginValidator) {
         const val LOGOUT_ERROR = "Logout error"
     }
 
-    private lateinit var view: View
-
-    fun attachView(view: View) {
-        this.view = view
-    }
-
-    fun login(userName: String, password: String) {
-        when(loginValidator.validateLogin(userName, password)){
-            is LoginResult.InvalidUserName -> view.showError(INVALID_USERNAME)
-            is LoginResult.InvalidPassword -> view.showError(INVALID_PASSWORD)
-            is LoginResult.Success -> {
+    fun login(userName: String, password: String) = async {
+        val result = loginValidator.validateLogin(userName, password)
+        when (result) {
+            is InvalidUserName -> view.showError(INVALID_USERNAME)
+            is InvalidPassword -> view.showError(INVALID_PASSWORD)
+            is Success -> {
                 view.hideLoginForm()
                 view.showLogoutForm()
             }
         }
     }
 
-    fun logout() {
+    fun logout() = async {
         if (loginValidator.validateLogout()) {
             view.hideLogoutForm()
             view.showLoginForm()

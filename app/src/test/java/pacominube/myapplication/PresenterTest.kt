@@ -1,9 +1,8 @@
 package pacominube.myapplication
 
 import com.nhaarman.mockito_kotlin.*
-import org.junit.Before
+import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Test
-
 
 class PresenterTest {
 
@@ -11,41 +10,38 @@ class PresenterTest {
     private val loginValidator = mock<LoginValidator>()
 
     private val presenter by lazy {
-        Presenter(loginValidator)
-    }
-
-    @Before
-    fun setup() {
-        presenter.attachView(view)
+        Presenter(loginValidator, view)
     }
 
     @Test
     fun presenterShouldShowInvalidUsernameMessage() {
-        whenever(loginValidator.validateLogin(any(), any())).thenReturn(LoginResult.InvalidUserName())
+        runBlocking {
+            whenever(loginValidator.validateLogin(any(), any())).thenReturn(InvalidUserName)
 
-        presenter.login("admin.", "admin")
+            presenter.login("admin.", "admin")
 
-        verify(view).showError(eq(Presenter.INVALID_USERNAME))
+            verify(view).showError(eq(Presenter.INVALID_USERNAME))
+        }
     }
 
     @Test
-    fun presenterShouldShowInvalidPasswordMessage() {
-        whenever(loginValidator.validateLogin(any(), any())).thenReturn(LoginResult.InvalidPassword())
-
-        presenter.login("admin", "pass")
-
-        verify(view).showError(eq(Presenter.INVALID_PASSWORD))
-    }
+    fun presenterShouldShowInvalidPasswordMessage() =
+        runBlocking {
+            whenever(loginValidator.validateLogin(any(), any())).thenReturn(InvalidPassword)
+            presenter.login("admin", "pass")
+            verify(view).showError(eq(Presenter.INVALID_PASSWORD))
+        }
 
     @Test
-    fun presenterShouldShowLougoutForm() {
-        whenever(loginValidator.validateLogin(any(), any())).thenReturn(LoginResult.Success())
+    fun presenterShouldShowLougoutForm() =
+        runBlocking {
+            whenever(loginValidator.validateLogin(any(), any())).thenReturn(Success)
 
-        presenter.login("admin", "pass")
+            presenter.login("admin", "admin")
 
-        verify(view).hideLoginForm()
-        verify(view).showLogoutForm()
-    }
+            verify(view).hideLoginForm()
+            verify(view).showLogoutForm()
+        }
 
     @Test
     fun presenterShouldLogout() {

@@ -21,7 +21,7 @@ class LoginValidatorTest {
 
         val result = loginValidator.validateLogin(userName, password)
 
-        assertTrue(result is LoginResult.InvalidPassword)
+        assertTrue(result is InvalidPassword)
     }
 
     @Test
@@ -31,7 +31,7 @@ class LoginValidatorTest {
 
         val result = loginValidator.validateLogin(userName, password)
 
-        assertTrue(result is LoginResult.Success)
+        assertTrue(result is Success)
     }
 
     @Test
@@ -41,7 +41,7 @@ class LoginValidatorTest {
 
         val result = loginValidator.validateLogin(userName, password)
 
-        assertTrue(result is LoginResult.InvalidUserName)
+        assertTrue(result is InvalidUserName)
     }
 
     @Test fun logoutValidatorShouldReturnTrue() {

@@ -10,14 +10,12 @@ class MainActivity : AppCompatActivity(), Presenter.View {
 
     private val loginValidator = LoginValidator(Clock())
     private val presenter by lazy {
-        Presenter(loginValidator)
+        Presenter(loginValidator, this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        presenter.attachView(this)
 
         loginButton.setOnClickListener {
             presenter.login(userName.text.toString(), password.text.toString())
@@ -43,9 +41,9 @@ class MainActivity : AppCompatActivity(), Presenter.View {
     }
 
     override fun hideLoginForm() {
-        loginButton.visibility = View.INVISIBLE
         userName.visibility = View.INVISIBLE
         password.visibility = View.INVISIBLE
+        loginButton.visibility = View.INVISIBLE
     }
 
     override fun hideLogoutForm() {

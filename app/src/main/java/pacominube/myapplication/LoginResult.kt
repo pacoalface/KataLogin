@@ -1,7 +1,6 @@
 package pacominube.myapplication
 
-sealed class LoginResult {
-    class InvalidUserName : LoginResult()
-    class InvalidPassword : LoginResult()
-    class Success : LoginResult()
-}
+sealed class LoginResult
+object InvalidUserName : LoginResult()
+object InvalidPassword : LoginResult()
+object Success : LoginResult()

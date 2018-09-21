@@ -7,9 +7,9 @@ class LoginValidator(private val clock: Clock) {
     }
 
     fun validateLogin(userName: String, password: String): LoginResult {
-        return if (userName == CREDENTIALS && password == CREDENTIALS) LoginResult.Success()
-        else if (userName.contains(Regex("[.,;]"))) LoginResult.InvalidUserName()
-        else LoginResult.InvalidPassword()
+        return if (userName == CREDENTIALS && password == CREDENTIALS) Success
+        else if (userName.contains(Regex("[.,;]"))) InvalidUserName
+        else InvalidPassword
     }
 
     fun validateLogout(): Boolean {
